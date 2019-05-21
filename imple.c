@@ -12,55 +12,80 @@ struct livros{
 void listar(struct livros inv[30]){
     int i;
     printf("ID |Título                        |Autor               |Gênero              |Publicação |Editora                   |Exemplares\n");
-    printf("---|------------------------------|--------------------|--------------------|-----------|--------------------------|----------\n");
+    printf("---+------------------------------+--------------------+--------------------+-----------+--------------------------+----------\n");
+
+
     for(i = 0; i < 6; i++){
         //ID
-        printf("%i  |", inv[i].id);
-        
-        //Nome
+        //Printa o número de espaços analisando o número de digitos de id
+        if(inv[i].id < 10){
+            printf("%i  |", inv[i].id);
+        } else {
+            printf("%i |", inv[i].id);  
+        }
+
+        //Autor
         int j;
-        int leng = strlen(inv[i].titulo); 
+        //Cria uma int leng que recebe o tamanho do título do livro
+        int leng = strlen(inv[i].titulo);
+        //Printa o nome do livro
         printf("%s", inv[i].titulo);
+        //Usa-se um for para printar o número de espaços até o fim da coluna, neste caso (30 - leng)
         for(j = 0; j < (30 - leng) ; j++){
             printf(" ");
         }
+        //Printa a barra separadora de colunas
         printf("|");
 
-        //autor
+        //Autor
+        //Cria uma int leng que recebe o tamanho do nome do autor
         leng = strlen(inv[i].autor); 
+        //Printa o nome do autor
         printf("%s", inv[i].autor);
+        //Usa-se um for para printar o número de espaços até o fim da coluna, neste caso (20 - leng)
         for(j = 0; j < (20 - leng) ; j++){
             printf(" ");
         }
+        //Printa a barra separadora de colunas
         printf("|");
 
-        //genero 
+        //Gênero 
+        //Cria uma int leng que recebe o tamanho do gênero
         leng = strlen(inv[i].genero); 
+        //Printa o gênero
         printf("%s", inv[i].genero);
+        //Usa-se um for para printar o número de espaços até o fim da coluna, neste caso (20 - leng)
         for(j = 0; j < (20 - leng) ; j++){
             printf(" ");
         }
+        //Printa a barra separadora de colunas
         printf("|");
 
-
+        //Ano de publicação
+        //Printa o ano de publicação
         printf("%i", inv[i].publicacao);
+        //Usa-se um for para printar o número de espaços até o fim da coluna, neste caso 7        
         for(j = 0; j < 7 ; j++){
             printf(" ");
         }
+        //Printa a barra separadora de colunas
         printf("|");
 
+        //Editora
+        //Cria uma int leng que recebe o tamanho da editora
         leng = strlen(inv[i].editora); 
+        //Printa a editora
         printf("%s", inv[i].editora);
+        //Usa-se um for para printar o número de espaços até o fim da coluna, neste caso (26 - leng)
         for(j = 0; j < (26-leng) ; j++){
             printf(" ");
         }
+        //Printa a barra separadora de colunas
         printf("|");
 
-        //até
+        //Nº de exemplares
+        //Printa o número de exemplares
         printf("%i\n", inv[i].exemplares);
-
-
-
 
 
     }
@@ -98,7 +123,6 @@ int main(){
     };
     listar(inv);
 
-    // // inv[4].titulo;
 
 
 
