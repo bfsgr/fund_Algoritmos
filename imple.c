@@ -126,7 +126,7 @@ void inserir(struct livros *inv){
   int tamanho = contar(inv)+1;
   char aux[100];
   int a;
-  inv[tamanho].id = inv[tamanho-1].id+1;
+  inv[tamanho].id = tamanho;
 
   printf("Título:");
   scanf("%s", aux);
@@ -171,9 +171,9 @@ void consulta(struct livros *inv, int id){
 void buscaAutor(struct livros *inv, char chave){
   int i, tamanho = contar(inv)+1;
 
-  for(i = 0, i < tamanho, i++){
-    if((strcmp(inv[i].autor, chave)) == 0){
-      
+  for(i = 0; i < tamanho; i++){
+    if( (strcmp(inv[i].autor, chave) ) == 0){
+       
     }
   }
 
