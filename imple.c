@@ -151,7 +151,21 @@ void inserir(struct livros *inv){
   scanf("%i", &inv[tamanho].exemplares);
 }
 
-void buscar(){
+void consulta(struct livros *inv, int id){
+  int i, tamanho = contar(inv)+1;
+
+  for (i = 0; i < tamanho; i++){
+    if(inv[i].id == id){
+      printf("-----------------------\n");
+      printf("ID: %i\n", inv[i].id);
+      printf("Título: %s\n", inv[i].titulo);
+      printf("Autor: %s\n", inv[i].autor);
+      printf("Gênero: %s\n", inv[i].genero);
+      printf("Editora: %s\n", inv[i].editora);
+      printf("Publicação: %i\n", inv[i].publicacao);
+      printf("Exemplares: %i\n", inv[i].exemplares);
+    }
+  }
 
 }
 void buscaautor(){
@@ -190,6 +204,10 @@ int main(){
           printf("Insira o ID que deseja remover: ");
           scanf("%i", &aux );
           remover(inv, aux);
+        } else if(ops == 5){
+          printf("Insira um ID: ");
+          scanf("%i", &aux);
+          consulta(inv, aux);
         }
       }
 
