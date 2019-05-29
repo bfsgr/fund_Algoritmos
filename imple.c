@@ -168,7 +168,15 @@ void consulta(struct livros *inv, int id){
   }
 
 }
-void buscaautor(){
+void buscaAutor(struct livros *inv, char chave){
+  int i, tamanho = contar(inv)+1;
+
+  for(i = 0, i < tamanho, i++){
+    if((strcmp(inv[i].autor, chave)) == 0){
+      
+    }
+  }
+
 
 }
 void mudaEx(){
@@ -178,6 +186,7 @@ void mudaEx(){
 
 int main(){
     int i, ops = -1, aux;
+    char a[100];
 
     struct livros inv[30] = {
         {.id = 0, .titulo = "1984", .autor = "George Orwell", .publicacao = 1949, .genero = "Distopia", .editora = "Companhia Das Letras", .exemplares = 10},
@@ -190,7 +199,7 @@ int main(){
     };
 
     while(ops != 0){
-      printf("------------------------\n0: Sair\n1: Listar\n2: Inserir\n3: Contar\n4: Remover\n\n:::Escolha uma opção: ");
+      printf("------------------------\n0: Sair\n1: Listar\n2: Inserir\n3: Contar\n4: Remover\n5: Consulta\n6: Buscar por Autor\n\n:::Escolha uma opção: ");
       scanf("%i", &ops);
 
       if(ops != 0){
@@ -208,6 +217,11 @@ int main(){
           printf("Insira um ID: ");
           scanf("%i", &aux);
           consulta(inv, aux);
+        } else if(ops == 6){
+          printf("Insira um autor: ");
+          scanf("%s", a);
+          buscaAutor(inv, a);
+
         }
       }
 
