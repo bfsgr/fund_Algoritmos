@@ -9,6 +9,14 @@ struct livros{
     char editora[50];
 };
 
+//função que substitui o uso de fflush(stdin), que pode não funcionar dependendo do compilador
+void clean_stdin(void){
+  int c;
+  do {
+      c = getchar();
+  } while (c != '\n' && c != EOF);
+}
+
 int contar(struct livros inv[]){
   int cont = -1;
   int i = 0;
@@ -19,84 +27,99 @@ int contar(struct livros inv[]){
   return cont;
 }
 
-void listar(struct livros inv[30]){
-    int i;
+void header(int aux){
+  if(aux == 1){
     printf("ID |Título                        |Autor               |Gênero              |Publicação |Editora                   |Exemplares\n");
     printf("---+------------------------------+--------------------+--------------------+-----------+--------------------------+----------\n");
+  }
+}
+//função interna que remove o '\n' de uma string. 
+void clear(char str[]){
+  char *p;
+  p = strchr(str, '\n');
+  *p = '\0';
+};
 
-    int tamanho = contar(inv)+1;
-    for(i = 0; i < tamanho; i++){
-      //ID
-        //Printa o número de espaços analisando o número de digitos de id
-        if(inv[i].id < 10){
-            printf("%i  |", inv[i].id);
-        } else {
-            printf("%i |", inv[i].id);
-        }
 
-        //Autor
-        int j;
-        //Cria uma int leng que recebe o tamanho do título do livro
-        int leng = strlen(inv[i].titulo);
-        //Printa o nome do livro
-        printf("%s", inv[i].titulo);
-        //Usa-se um for para printar o número de espaços até o fim da coluna, neste caso (30 - leng)
-        for(j = 0; j < (30 - leng) ; j++){
-            printf(" ");
-        }
-        //Printa a barra separadora de colunas
-        printf("|");
+void printar(struct livros inv[30], int pos){
 
-        //Autor
-        //Cria uma int leng que recebe o tamanho do nome do autor
-        leng = strlen(inv[i].autor);
-        //Printa o nome do autor
-        printf("%s", inv[i].autor);
-        //Usa-se um for para printar o número de espaços até o fim da coluna, neste caso (20 - leng)
-        for(j = 0; j < (20 - leng) ; j++){
-            printf(" ");
-        }
-        //Printa a barra separadora de colunas
-        printf("|");
-
-        //Gênero
-        //Cria uma int leng que recebe o tamanho do gênero
-        leng = strlen(inv[i].genero);
-        //Printa o gênero
-        printf("%s", inv[i].genero);
-        //Usa-se um for para printar o número de espaços até o fim da coluna, neste caso (20 - leng)
-        for(j = 0; j < (20 - leng) ; j++){
-            printf(" ");
-        }
-        //Printa a barra separadora de colunas
-        printf("|");
-
-        //Ano de publicação
-        //Printa o ano de publicação
-        printf("%i", inv[i].publicacao);
-        //Usa-se um for para printar o número de espaços até o fim da coluna, neste caso 7
-        for(j = 0; j < 7 ; j++){
-            printf(" ");
-        }
-        //Printa a barra separadora de colunas
-        printf("|");
-
-        //Editora
-        //Cria uma int leng que recebe o tamanho da editora
-        leng = strlen(inv[i].editora);
-        //Printa a editora
-        printf("%s", inv[i].editora);
-        //Usa-se um for para printar o número de espaços até o fim da coluna, neste caso (26 - leng)
-        for(j = 0; j < (26-leng) ; j++){
-            printf(" ");
-        }
-        //Printa a barra separadora de colunas
-        printf("|");
-
-        //Nº de exemplares
-        //Printa o número de exemplares
-        printf("%i\n", inv[i].exemplares);
+  if(inv[pos].id < 10){
+        printf("%i  |", inv[pos].id);
+    } else {
+        printf("%i |", inv[pos].id);
     }
+
+    //Autor
+    int j;
+    //Cria uma int leng que recebe o tamanho do título do livro
+    int leng = strlen(inv[pos].titulo);
+    //Printa o nome do livro
+    printf("%s", inv[pos].titulo);
+    //Usa-se um for para printar o número de espaços até o fim da coluna, neste caso (30 - leng)
+    for(j = 0; j < (30 - leng) ; j++){
+        printf(" ");
+    }
+    //Printa a barra separadora de colunas
+    printf("|");
+
+    //Autor
+    //Cria uma int leng que recebe o tamanho do nome do autor
+    leng = strlen(inv[pos].autor);
+    //Printa o nome do autor
+    printf("%s", inv[pos].autor);
+    //Usa-se um for para printar o número de espaços até o fim da coluna, neste caso (20 - leng)
+    for(j = 0; j < (20 - leng) ; j++){
+        printf(" ");
+    }
+    //Printa a barra separadora de colunas
+    printf("|");
+
+    //Gênero
+    //Cria uma int leng que recebe o tamanho do gênero
+    leng = strlen(inv[pos].genero);
+    //Printa o gênero
+    printf("%s", inv[pos].genero);
+    //Usa-se um for para printar o número de espaços até o fim da coluna, neste caso (20 - leng)
+    for(j = 0; j < (20 - leng) ; j++){
+        printf(" ");
+    }
+    //Printa a barra separadora de colunas
+    printf("|");
+
+    //Ano de publicação
+    //Printa o ano de publicação
+    printf("%i", inv[pos].publicacao);
+    //Usa-se um for para printar o número de espaços até o fim da coluna, neste caso 7
+    for(j = 0; j < 7 ; j++){
+        printf(" ");
+    }
+    //Printa a barra separadora de colunas
+    printf("|");
+
+    //Editora
+    //Cria uma int leng que recebe o tamanho da editora
+    leng = strlen(inv[pos].editora);
+    //Printa a editora
+    printf("%s", inv[pos].editora);
+    //Usa-se um for para printar o número de espaços até o fim da coluna, neste caso (26 - leng)
+    for(j = 0; j < (26-leng) ; j++){
+        printf(" ");
+    }
+    //Printa a barra separadora de colunas
+    printf("|");
+
+    //Nº de exemplares
+    //Printa o número de exemplares
+    printf("%i\n", inv[pos].exemplares);
+}
+
+void listar(struct livros inv[30]){
+  header(1);
+  int i;
+  int tamanho = contar(inv)+1;
+  for(i = 0; i < tamanho; i++){
+    printar(inv, i);
+  }
 }
 int remover(struct livros *inv, int id){
   //Cria uma variavel que receve o tamanho do array
@@ -125,12 +148,6 @@ int remover(struct livros *inv, int id){
 
 
 }
-//função interna que remove o '\n' de uma string. 
-void clear(char str[]){
-  char *p;
-  p = strchr(str, '\n');
-  *p = '\0';
-};
 
 void inserir(struct livros *inv){
 
@@ -156,11 +173,11 @@ void inserir(struct livros *inv){
   //o novo id será o o novo tamanho do array
   inv[tamanho].id = tamanho;
   //limpa o stdin para remover bugs entre scanf e fgets
-  fflush(stdin);
+  clean_stdin();
 
   //Le o titulo
   do{
-    printf("Título:");
+    printf("Título: ");
     fgets(aux, 100, stdin);
     clear(aux);
   } while(valida(aux) == 1);
@@ -168,7 +185,7 @@ void inserir(struct livros *inv){
 
   //Le o autor
   do{
-    printf("Autor:");
+    printf("Autor: ");
     fgets(aux, 100, stdin);
     clear(aux);
   }while(valida(aux) == 1);
@@ -191,7 +208,7 @@ void inserir(struct livros *inv){
   strcpy(inv[tamanho].genero, aux);
   
   //limpa o stdin
-  fflush(stdin);
+  clean_stdin();
   
   //le o ano de publicação
   printf("Ano de Publicação: ");
@@ -202,11 +219,12 @@ void inserir(struct livros *inv){
   scanf("%i", &inv[tamanho].exemplares);
 }
 
-void consulta(struct livros *inv, int id){
-  int i, tamanho = contar(inv)+1;
+int consulta(struct livros *inv, int id){
+  int i, tamanho = contar(inv)+1, ret = 1;
 
   for (i = 0; i < tamanho; i++){
     if(inv[i].id == id){
+      ret = 0;
       printf("-----------------------\n");
       printf("ID: %i\n", inv[i].id);
       printf("Título: %s\n", inv[i].titulo);
@@ -215,20 +233,25 @@ void consulta(struct livros *inv, int id){
       printf("Editora: %s\n", inv[i].editora);
       printf("Publicação: %i\n", inv[i].publicacao);
       printf("Exemplares: %i\n", inv[i].exemplares);
+      return ret;
     }
   }
+  return ret;
+  
 
 }
-void buscaAutor(struct livros *inv, char chave){
-  int i, tamanho = contar(inv)+1;
+int buscaAutor(struct livros *inv, char *chave){
+
+  int i, tamanho = contar(inv)+1, aux = 0;
 
   for(i = 0; i < tamanho; i++){
     if( (strcmp(inv[i].autor, chave) ) == 0){
-       
+      aux++;
+      header(aux);
+      printar(inv, i);
     }
   }
-
-
+  return aux;
 }
 int mudaEx(struct livros *inv, int chave){
   int i, tamanho = contar(inv)+1, ret = 1;
@@ -291,17 +314,24 @@ int main(){
         case 4:{
           printf("Insira um ID: ");
           scanf("%i", &aux);
-          consulta(inv, aux);
+
+          retorno = consulta(inv, aux);
+          if(retorno == 1){
+            printf(":::::.Registro não encontrado.:::::\n");
+          }
           break;
         }
         case 5:{
           printf("Insira um autor: ");
 
-          fflush(stdin);
+          clean_stdin();
           fgets(autor, 100, stdin);
           clear(autor);
 
-          buscaAutor(inv, autor);
+          retorno = buscaAutor(inv, autor);
+          if(retorno == 0){
+            printf(":::::.Registro não encontrado.:::::\n");
+          }
           break;
         }
         case 6:{
