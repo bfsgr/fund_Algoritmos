@@ -98,22 +98,28 @@ void listar(struct livros inv[30]){
         printf("%i\n", inv[i].exemplares);
     }
 }
-void remover(struct livros *inv, int id){
+int remover(struct livros *inv, int id){
+  //Cria uma variavel que receve o tamanho do array
   int tamanho = contar(inv)+1;
-  int i,j;
+  int i, j, ret = 1;
+  //itera sobre os elementos do array
   for(i = 0; i < tamanho; i++){
+    //se encontrar o elemento que o usuário digitou:
     if(id == inv[i].id){
+      ret = 0;
+      //começa a iterar a partir do elemento do usuário até o fim do array
       for(j = i; j < tamanho; j++){
+        //copia o elemento seguinte para a posição do elemento a ser apagado e assim por diante
         inv[j].id = inv[j+1].id;
         inv[j].publicacao = inv[j+1].publicacao;
         inv[j].exemplares = inv[j+1].exemplares;
-
         strcpy(inv[j].autor, inv[j+1].autor);
         strcpy(inv[j].titulo, inv[j+1].titulo);
         strcpy(inv[j].editora, inv[j+1].editora);
         strcpy(inv[j].genero, inv[j+1].genero);
-
       }
+      //retorna 0 depois de apagar o registro
+      return ret;
     }
   }
 
@@ -122,28 +128,41 @@ void remover(struct livros *inv, int id){
 
 
 void inserir(struct livros *inv){
+  
+  void clear(char str[]){
+    char *p;
+    p = strchr(str, '\n');
+    *p = '\0';
+  };
 
   int tamanho = contar(inv)+1;
   char aux[100];
   int a;
   inv[tamanho].id = tamanho;
 
+  fflush(stdin);
+
   printf("Título:");
-  scanf("%s", aux);
+  fgets(aux, 100, stdin);
+  clear(aux);
   strcpy(inv[tamanho].titulo, aux);
 
   printf("Autor:");
-  scanf("%s", aux);
+  fgets(aux, 100, stdin);
+  clear(aux);
   strcpy(inv[tamanho].autor, aux);
 
   printf("Editora: ");
-  scanf("%s", aux);
+  fgets(aux, 100, stdin);
+  clear(aux);
   strcpy(inv[tamanho].editora, aux);
 
   printf("Gênero: ");
-  scanf("%s", aux);
+  fgets(aux, 100, stdin);
+  clear(aux);
   strcpy(inv[tamanho].genero, aux);
 
+  fflush(stdin);
   printf("Publicação: ");
   scanf("%i", &inv[tamanho].publicacao);
 
@@ -201,30 +220,55 @@ int main(){
     while(ops != 0){
       printf("------------------------\n0: Sair\n1: Listar\n2: Inserir\n3: Contar\n4: Remover\n5: Consulta\n6: Buscar por Autor\n\n:::Escolha uma opção: ");
       scanf("%i", &ops);
-
-      if(ops != 0){
-        if(ops == 1){
+      
+      switch (ops){
+        case 0:{
+          break;
+        }
+        case 1:{
           listar(inv);
-        } else if(ops == 2){
+          break;
+        }
+        case 2:{
           inserir(inv);
-        } else if(ops == 3){
+          break;
+        }
+        case 3:{
           printf("%i",contar(inv));
-        } else if(ops == 4){
+          break;
+        }
+        case 4:{
           printf("Insira o ID que deseja remover: ");
           scanf("%i", &aux );
-          remover(inv, aux);
-        } else if(ops == 5){
+          
+          int a = remover(inv, aux);
+          
+          if(a == 0){
+            printf(":::::.Registro removido com sucesso.:::::\n");
+          } else{
+            printf(":::::.Registro não encontrado.:::::\n");
+          }
+
+          break;
+        }
+        case 5:{
           printf("Insira um ID: ");
           scanf("%i", &aux);
           consulta(inv, aux);
-        } else if(ops == 6){
+          break;
+        }
+        case 6:{
           printf("Insira um autor: ");
           scanf("%s", a);
           buscaAutor(inv, a);
-
+          break;
+        }
+        
+        default:{
+          printf("Opção não listada\n");
+          break;
         }
       }
-
     }
 
 
