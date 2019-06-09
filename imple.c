@@ -115,9 +115,13 @@ void printar(struct livros inv[30], int pos){
 }
 
 void listar(struct livros inv[30]){
-  cabecalho(1);
   int i;
   int tamanho = contar(inv)+1;
+  if(tamanho != 0){
+    cabecalho(1);
+  } else {
+    printf("::::.Sem registros.::::\n");
+  }
   for(i = 0; i < tamanho; i++){
     printar(inv, i);
   }
@@ -150,7 +154,7 @@ int remover(struct livros *inv, int id){
 
 }
 
-void inserir(struct livros *inv){
+void inserir(struct livros *inv, int *cont){
 
   int valida(char str[]){
     int size = strlen(str), i, cont = 0;
@@ -171,8 +175,8 @@ void inserir(struct livros *inv){
   int tamanho = contar(inv)+1, ano;
   //string auxiliar 
   char aux[100];
-  //o novo id será o o novo tamanho do array
-  inv[tamanho].id = tamanho;
+  //o novo id será o contador +1
+  inv[tamanho].id = *cont;
   //limpa o stdin para remover bugs entre scanf e fgets
   clean_stdin();
 
@@ -215,6 +219,7 @@ void inserir(struct livros *inv){
   //le o número de exemplares
   printf("Nº Exemplares: ");
   scanf("%i", &inv[tamanho].exemplares);
+  *cont = *cont + 1;
 }
 
 int consulta(struct livros *inv, int id){
@@ -267,18 +272,11 @@ int mudaEx(struct livros *inv, int chave){
 
 
 int main(){
-  int i, ops = -1, aux, retorno;
+  int i, ops = -1, aux, retorno, cont = 0;
   char autor[100];
 
-  struct livros inv[30] = {
-      {.id = 0, .titulo = "1984", .autor = "George Orwell", .publicacao = 1949, .genero = "Distopia", .editora = "Companhia Das Letras", .exemplares = 10},
-      {.id = 1, .titulo = "Com amor, Simon", .autor = "Becky Albertalli", .publicacao = 2015, .genero = "LGBT", .editora = "Intrinseca", .exemplares = 10},
-      {.id = 2, .titulo = "Admiravel novo mundo", .autor = "Aldous Huxley", .publicacao = 1941, .genero = "Distopia", .editora = "Biblioteca Azul", .exemplares = 10},
-      {.id = 3, .titulo = "A hora da estrela", .autor = "Clarice Lispector", .publicacao = 1977, .genero = "Romance", .editora = "Rocco", .exemplares = 10},
-      {.id = 4, .titulo = "Divergente", .autor = "Veronica Roth", .publicacao = 2011, .genero = "Aventura", .editora = "Rocco", .exemplares = 10},
-      {.id = 5, .titulo = "Codigo da vinci", .autor = "Dan Brown", .publicacao = 2003, .genero = "Romance", .editora = "Arqueiro", .exemplares = 10},
+  struct livros inv[30] = {};
 
-  };
 
   while(ops != 0){
     printf("------------------------\n0: Sair\n1: Listar\n2: Inserir\n3: Remover\n4: Consulta\n5: Buscar por Autor\n6: Mudar Nº de exemplares\n\n:::Escolha uma opção: ");
@@ -293,7 +291,7 @@ int main(){
         break;
       }
       case 2:{
-        inserir(inv);
+        inserir(inv, &cont);
         break;
       }
       case 3:{
