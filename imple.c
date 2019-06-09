@@ -15,6 +15,7 @@ void clean_stdin(void){
   do {
       c = getchar();
   } while (c != '\n' && c != EOF);
+
 }
 
 int contar(struct livros inv[]){
@@ -27,7 +28,7 @@ int contar(struct livros inv[]){
   return cont;
 }
 
-void header(int aux){
+void cabecalho(int aux){
   if(aux == 1){
     printf("ID |Título                        |Autor               |Gênero              |Publicação |Editora                   |Exemplares\n");
     printf("---+------------------------------+--------------------+--------------------+-----------+--------------------------+----------\n");
@@ -114,7 +115,7 @@ void printar(struct livros inv[30], int pos){
 }
 
 void listar(struct livros inv[30]){
-  header(1);
+  cabecalho(1);
   int i;
   int tamanho = contar(inv)+1;
   for(i = 0; i < tamanho; i++){
@@ -207,9 +208,6 @@ void inserir(struct livros *inv){
   }while(valida(aux) == 1);
   strcpy(inv[tamanho].genero, aux);
   
-  //limpa o stdin
-  clean_stdin();
-  
   //le o ano de publicação
   printf("Ano de Publicação: ");
   scanf("%i", &inv[tamanho].publicacao);
@@ -247,12 +245,13 @@ int buscaAutor(struct livros *inv, char *chave){
   for(i = 0; i < tamanho; i++){
     if( (strcmp(inv[i].autor, chave) ) == 0){
       aux++;
-      header(aux);
+      cabecalho(aux);
       printar(inv, i);
     }
   }
   return aux;
 }
+
 int mudaEx(struct livros *inv, int chave){
   int i, tamanho = contar(inv)+1, ret = 1;
 
@@ -268,92 +267,88 @@ int mudaEx(struct livros *inv, int chave){
 
 
 int main(){
-    int i, ops = -1, aux, retorno;
-    char autor[100];
+  int i, ops = -1, aux, retorno;
+  char autor[100];
 
-    struct livros inv[30] = {
-        {.id = 0, .titulo = "1984", .autor = "George Orwell", .publicacao = 1949, .genero = "Distopia", .editora = "Companhia Das Letras", .exemplares = 10},
-        {.id = 1, .titulo = "Com amor, Simon", .autor = "Becky Albertalli", .publicacao = 2015, .genero = "LGBT", .editora = "Intrinseca", .exemplares = 10},
-        {.id = 2, .titulo = "Admiravel novo mundo", .autor = "Aldous Huxley", .publicacao = 1941, .genero = "Distopia", .editora = "Biblioteca Azul", .exemplares = 10},
-        {.id = 3, .titulo = "A hora da estrela", .autor = "Clarice Lispector", .publicacao = 1977, .genero = "Romance", .editora = "Rocco", .exemplares = 10},
-        {.id = 4, .titulo = "Divergente", .autor = "Veronica Roth", .publicacao = 2011, .genero = "Aventura", .editora = "Rocco", .exemplares = 10},
-        {.id = 5, .titulo = "Codigo da vinci", .autor = "Dan Brown", .publicacao = 2003, .genero = "Romance", .editora = "Arqueiro", .exemplares = 10},
+  struct livros inv[30] = {
+      {.id = 0, .titulo = "1984", .autor = "George Orwell", .publicacao = 1949, .genero = "Distopia", .editora = "Companhia Das Letras", .exemplares = 10},
+      {.id = 1, .titulo = "Com amor, Simon", .autor = "Becky Albertalli", .publicacao = 2015, .genero = "LGBT", .editora = "Intrinseca", .exemplares = 10},
+      {.id = 2, .titulo = "Admiravel novo mundo", .autor = "Aldous Huxley", .publicacao = 1941, .genero = "Distopia", .editora = "Biblioteca Azul", .exemplares = 10},
+      {.id = 3, .titulo = "A hora da estrela", .autor = "Clarice Lispector", .publicacao = 1977, .genero = "Romance", .editora = "Rocco", .exemplares = 10},
+      {.id = 4, .titulo = "Divergente", .autor = "Veronica Roth", .publicacao = 2011, .genero = "Aventura", .editora = "Rocco", .exemplares = 10},
+      {.id = 5, .titulo = "Codigo da vinci", .autor = "Dan Brown", .publicacao = 2003, .genero = "Romance", .editora = "Arqueiro", .exemplares = 10},
 
-    };
+  };
 
-    while(ops != 0){
-      printf("------------------------\n0: Sair\n1: Listar\n2: Inserir\n3: Remover\n4: Consulta\n5: Buscar por Autor\n6: Mudar Nº de exemplares\n\n:::Escolha uma opção: ");
-      scanf("%i", &ops);
-      
-      switch (ops){
-        case 0:{
-          break;
-        }
-        case 1:{
-          listar(inv);
-          break;
-        }
-        case 2:{
-          inserir(inv);
-          break;
-        }
-        case 3:{
-          printf("Insira o ID que deseja remover: ");
-          scanf("%i", &aux );
-          
-          retorno = remover(inv, aux);
-          
-          if(retorno == 0){
-            printf(":::::.Registro removido com sucesso.:::::\n");
-          } else{
-            printf(":::::.Registro não encontrado.:::::\n");
-          }
-
-          break;
-        }
-        case 4:{
-          printf("Insira um ID: ");
-          scanf("%i", &aux);
-
-          retorno = consulta(inv, aux);
-          if(retorno == 1){
-            printf(":::::.Registro não encontrado.:::::\n");
-          }
-          break;
-        }
-        case 5:{
-          printf("Insira um autor: ");
-
-          clean_stdin();
-          fgets(autor, 100, stdin);
-          clear(autor);
-
-          retorno = buscaAutor(inv, autor);
-          if(retorno == 0){
-            printf(":::::.Registro não encontrado.:::::\n");
-          }
-          break;
-        }
-        case 6:{
-          printf("Digite o ID que deseja modificar: ");
-          scanf("%i", &aux);
-          retorno = mudaEx(inv, aux);
-          if(retorno == 0){
-            printf(":::::.Registro alterado com sucesso.:::::\n");
-          } else{
-            printf(":::::.Registro não encontrado.:::::\n");
-          }
-          break;
-        }
+  while(ops != 0){
+    printf("------------------------\n0: Sair\n1: Listar\n2: Inserir\n3: Remover\n4: Consulta\n5: Buscar por Autor\n6: Mudar Nº de exemplares\n\n:::Escolha uma opção: ");
+    scanf("%i", &ops);
+    
+    switch (ops){
+      case 0:{
+        break;
+      }
+      case 1:{
+        listar(inv);
+        break;
+      }
+      case 2:{
+        inserir(inv);
+        break;
+      }
+      case 3:{
+        printf("Insira o ID que deseja remover: ");
+        scanf("%i", &aux );
         
-        default:{
-          printf("Opção não listada\n");
-          break;
+        retorno = remover(inv, aux);
+        
+        if(retorno == 0){
+          printf(":::::.Registro removido com sucesso.:::::\n");
+        } else{
+          printf(":::::.Registro não encontrado.:::::\n");
         }
+
+        break;
+      }
+      case 4:{
+        printf("Insira um ID: ");
+        scanf("%i", &aux);
+
+        retorno = consulta(inv, aux);
+        if(retorno == 1){
+          printf(":::::.Registro não encontrado.:::::\n");
+        }
+        break;
+      }
+      case 5:{
+        printf("Insira um autor: ");
+
+        clean_stdin();
+        fgets(autor, 100, stdin);
+        clear(autor);
+
+        retorno = buscaAutor(inv, autor);
+        if(retorno == 0){
+          printf(":::::.Registro não encontrado.:::::\n");
+        }
+        break;
+      }
+      case 6:{
+        printf("Digite o ID que deseja modificar: ");
+        scanf("%i", &aux);
+        retorno = mudaEx(inv, aux);
+        if(retorno == 0){
+          printf(":::::.Registro alterado com sucesso.:::::\n");
+        } else{
+          printf(":::::.Registro não encontrado.:::::\n");
+        }
+        break;
+      }
+      
+      default:{
+        printf("Opção não listada\n");
+        break;
       }
     }
-
-
-
-
+  }
 }
