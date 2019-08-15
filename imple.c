@@ -10,6 +10,16 @@ struct livros{
     char editora[50];
 };
 
+int contar(struct livros inv[]){
+  int cont = -1;
+  int i = 0;
+  while(inv[i].autor[0] != '\0'){
+    cont++;
+    i++;
+  }
+  return cont;
+}
+
 //função que substitui o uso de fflush(stdin), que pode não funcionar dependendo do compilador
 void clean_stdin(void){
   int c;
@@ -93,7 +103,6 @@ void load(struct livros *inv, FILE *fp, int *cont){
     int pub = strtol(response[4], NULL, 10);
     int exp = strtol(response[6], NULL, 10);
 
-
     inv[j].id = pos;
 
     strcpy(inv[j].titulo, response[1]);
@@ -106,7 +115,7 @@ void load(struct livros *inv, FILE *fp, int *cont){
 
     inv[j].exemplares = exp;
   }
-
+  //garante que os ID's sejam únicos
   FILE *ident;
   ident = fopen("contador.txt", "r");
   if(ident == NULL){
@@ -121,15 +130,7 @@ void load(struct livros *inv, FILE *fp, int *cont){
 
 }
 
-int contar(struct livros inv[]){
-  int cont = -1;
-  int i = 0;
-  while(inv[i].autor[0] != '\0'){
-    cont++;
-    i++;
-  }
-  return cont;
-}
+
 
 void cabecalho(int aux){
   if(aux == 1){
