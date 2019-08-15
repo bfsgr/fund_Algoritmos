@@ -389,7 +389,7 @@ int main(){
 
 
   while(ops != 0){
-    printf("------------------------\n0: Sair\n1: Listar\n2: Inserir\n3: Remover\n4: Consulta\n5: Buscar por Autor\n6: Mudar Nº de exemplares\n\n:::Escolha uma opção: ");
+    printf("------------------------\n0: Sair\n1: Listar\n2: Inserir\n3: Remover\n4: Consulta\n5: Buscar por Autor\n6: Mudar Nº de exemplares\n7: Limpar base de dados\n\n:::Escolha uma opção: ");
     scanf("%i", &ops);
     
     switch (ops){
@@ -462,6 +462,14 @@ int main(){
         file = open(0);
         write(inv, file);
         fclose(file);
+        break;
+      }
+      case 7: {
+        FILE *fp;
+        fp = fopen("db.txt","w+");
+        fclose(fp);
+        fp = fopen("contador.txt","w+");
+        fclose(fp);
         break;
       }
       
