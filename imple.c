@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 struct livros{
     int id, publicacao, exemplares;
@@ -15,6 +16,108 @@ void clean_stdin(void){
   do {
       c = getchar();
   } while (c != '\n' && c != EOF);
+
+}
+//abre o arquivo
+FILE* open(int a){
+  FILE *fp;
+  if(a == 1){
+    fp = fopen("db.txt","a+");
+  } else {
+    fp = fopen("db.txt","w+");
+  }
+  if(fp == NULL){
+    printf("Não foi possível abrir a base de dados.\n");
+  } else {
+    return fp;
+  }
+}
+
+//escreve os dados do struct para o arquivo
+void write(struct livros *inv, FILE *fp){
+  int contagem = contar(inv)+1, i;
+
+  for(i = 0; i < contagem; i++){
+    fprintf(fp, "%i|", inv[i].id);
+    fprintf(fp, "%s|", inv[i].titulo);
+    fprintf(fp, "%s|", inv[i].autor);
+    fprintf(fp, "%s|", inv[i].genero);
+    fprintf(fp, "%i|", inv[i].publicacao);
+    fprintf(fp, "%s|", inv[i].editora);
+    fprintf(fp, "%i\n", inv[i].exemplares);
+  }
+}
+
+void saveCount(int *cont){
+  FILE *fp;
+  fp = fopen("contador.txt","w+");
+  fprintf(fp,"%i", *cont);
+  fclose(fp);
+}
+
+//quebra uma linha do arquivo pelo |
+void tokenize(char* entry, char response[7][80]){
+    int i = 0;
+    char *token;
+    token = strtok(entry, "|");
+    
+    while(token != NULL ) {
+      strcpy(response[i], token);
+      // printf( " %s\n", token);
+      token = strtok(NULL, "|");
+      i++;
+    }
+}
+
+//loga os dados do arquivo para o struct
+void load(struct livros *inv, FILE *fp, int *cont){
+  int i = 0, j;
+  char a[30][200];
+  rewind(fp);
+
+  //capture entries
+  while(feof(fp) == 0){
+    fscanf(fp,"%[^\n]", a[i]);
+    if(feof(fp) == 0){
+      fseek( fp, 2, SEEK_CUR);
+    }
+    i++;
+  }
+  i--;
+
+  for(j = 0; j < i; j++){
+    char response[7][80];
+    tokenize(a[j], response);
+
+    int pos = strtol(response[0], NULL, 10);
+    int pub = strtol(response[4], NULL, 10);
+    int exp = strtol(response[6], NULL, 10);
+
+
+    inv[j].id = pos;
+
+    strcpy(inv[j].titulo, response[1]);
+    strcpy(inv[j].autor, response[2]);
+    strcpy(inv[j].genero, response[3]);
+
+    inv[j].publicacao = pub;
+
+    strcpy(inv[j].editora, response[5]);
+
+    inv[j].exemplares = exp;
+  }
+
+  FILE *ident;
+  ident = fopen("contador.txt", "r");
+  if(ident == NULL){
+    *cont = inv[contar(inv)].id+1;
+  } else {
+    char num[2];
+    fscanf(ident,"%[^\n]", num);
+    int leitura = strtol(num, NULL, 10);
+    *cont = leitura;
+    fclose(ident);
+  }
 
 }
 
@@ -220,6 +323,7 @@ void inserir(struct livros *inv, int *cont){
   printf("Nº Exemplares: ");
   scanf("%i", &inv[tamanho].exemplares);
   *cont = *cont + 1;
+  saveCount(cont);
 }
 
 int consulta(struct livros *inv, int id){
@@ -277,6 +381,12 @@ int main(){
 
   struct livros inv[30] = {};
 
+  FILE *file;
+  file = open(1);
+
+  load(inv,file, &cont);
+  fclose(file);
+
 
   while(ops != 0){
     printf("------------------------\n0: Sair\n1: Listar\n2: Inserir\n3: Remover\n4: Consulta\n5: Buscar por Autor\n6: Mudar Nº de exemplares\n\n:::Escolha uma opção: ");
@@ -292,6 +402,10 @@ int main(){
       }
       case 2:{
         inserir(inv, &cont);
+        FILE *file;
+        file = open(0);
+        write(inv, file);
+        fclose(file);
         break;
       }
       case 3:{
@@ -305,7 +419,10 @@ int main(){
         } else{
           printf(":::::.Registro não encontrado.:::::\n");
         }
-
+        FILE *file;
+        file = open(0);
+        write(inv, file);
+        fclose(file);
         break;
       }
       case 4:{
@@ -337,9 +454,14 @@ int main(){
         retorno = mudaEx(inv, aux);
         if(retorno == 0){
           printf(":::::.Registro alterado com sucesso.:::::\n");
+          write(inv,file);
         } else{
           printf(":::::.Registro não encontrado.:::::\n");
         }
+        FILE *file;
+        file = open(0);
+        write(inv, file);
+        fclose(file);
         break;
       }
       
