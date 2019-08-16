@@ -472,6 +472,7 @@ int main(){
         fp = fopen("contador.txt","w+");
         fclose(fp);
         memset(inv, 0, sizeof inv);
+        cont = 0;
         break;
       }
       
