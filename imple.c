@@ -30,23 +30,29 @@ void clean_stdin(void){
 }
 //abre o arquivo
 FILE* open(int a){
+  //cria um ponteiro de arquivo
   FILE *fp;
   if(a == 1){
+    //se o parametro a for 1 > abre o arquivo com append (se o arquivo existir abre com o stream no final dele, caso contrário cria o arquivo).
     fp = fopen("db.txt","a+");
   } else {
+    //caso parametro a seja não-zero abre o arquivo com w+ (se o arquivo existir limpa ele, caso contrário cria um novo)
     fp = fopen("db.txt","w+");
   }
+  //checagem se o ponteiro é válido
   if(fp == NULL){
     printf("Não foi possível abrir a base de dados.\n");
   } else {
+    //se válido retorna o valor do ponteiro
     return fp;
   }
 }
 
 //escreve os dados do struct para o arquivo
 void write(struct livros *inv, FILE *fp){
+  //conta o numero de elementos no struct do heap (memória virtual) e define o i
   int contagem = contar(inv)+1, i;
-
+  //itera sobre os elementos do struct gravando cada entrada em uma linha e cada propriedade separada por um pipe (|)
   for(i = 0; i < contagem; i++){
     fprintf(fp, "%i|", inv[i].id);
     fprintf(fp, "%s|", inv[i].titulo);
@@ -58,6 +64,7 @@ void write(struct livros *inv, FILE *fp){
   }
 }
 
+//salva o numero do contador em um arquivo em separado
 void saveCount(int *cont){
   FILE *fp;
   fp = fopen("contador.txt","w+");
@@ -69,62 +76,87 @@ void saveCount(int *cont){
 void tokenize(char* entry, char response[7][80]){
     int i = 0;
     char *token;
+    //função strtok le todos o caracteres até o pipe
     token = strtok(entry, "|");
-    
+    //le as outras propriedades entre os pipes até o retorno ser nulo
     while(token != NULL ) {
+      //copia a propriedade lida para o array response
       strcpy(response[i], token);
-      // printf( " %s\n", token);
+      //quando a strtok é chamada com NULL ela continua a ler do stream de sua ultima chamada, asism lendo todas as propriedades entre os pipes
       token = strtok(NULL, "|");
+      //aumenta o iterador
       i++;
     }
 }
 
 //loga os dados do arquivo para o struct
 void load(struct livros *inv, FILE *fp, int *cont){
-  int i = 0, j;
+  //iteradores
+  int i = -1, j;
+  //array de strings auxiliares
   char a[30][200];
+  //volta ao inicio do arquivo
   rewind(fp);
 
-  //capture entries
+  //se o final do arquivo NÃO foi atingido
   while(feof(fp) == 0){
+    //usa o fscanf para ler do arquivo, com a diletiva %[^\n] ele para a leitura quando achar um \n
     fscanf(fp,"%[^\n]", a[i]);
+    //checa novamente se é o fim do arquivo. Isso é feito pois se o stream estiver no final do arquivo, move-lo para frente ira voltar ao inicio do arquivo
     if(feof(fp) == 0){
+      //move o stream 2 bytes da posição atual. (2 bytes é o tamanho de um char único)
       fseek( fp, 2, SEEK_CUR);
     }
+    //iterador
     i++;
   }
-  i--;
 
+  //itera sobre a contagem de linhas/entradas do arquivo
   for(j = 0; j < i; j++){
+    //array de strings auxiliar
     char response[7][80];
+    //chama a função tokenize para cada uma das linhas, que irá retornar as propriedades individuais da entrada
     tokenize(a[j], response);
-
+    //conversões de char para int usando a função strtol(string, ponteiro, base). 
+    //pos é o id da entrada
     int pos = strtol(response[0], NULL, 10);
+    //pub é o ano de publicação da entrada
     int pub = strtol(response[4], NULL, 10);
+    //exp é o numero de exemplares da entrada
     int exp = strtol(response[6], NULL, 10);
 
+    // escreve o id, ano de publicação e número de exemplares da entrada no struct
     inv[j].id = pos;
+    inv[j].publicacao = pub;
+    inv[j].exemplares = exp;
 
+    //copia titulo, autor, editora e genero para o heap
     strcpy(inv[j].titulo, response[1]);
     strcpy(inv[j].autor, response[2]);
     strcpy(inv[j].genero, response[3]);
-
-    inv[j].publicacao = pub;
-
     strcpy(inv[j].editora, response[5]);
-
-    inv[j].exemplares = exp;
   }
-  //garante que os ID's sejam únicos
+
+
+  //===== essa parte do código garante que os ID's sejam únicos =======
+  //abre o arquivo do contador para leitura
   FILE *ident;
   ident = fopen("contador.txt", "r");
+  //se ele não existir:
   if(ident == NULL){
+    //o contador retornado será o numero de entradas do struct +1
     *cont = inv[contar(inv)].id+1;
   } else {
+    //caso contrário:
+    //cria string auxiliar num
     char num[2];
+    //le até o fim da linha
     fscanf(ident,"%[^\n]", num);
+    //converte a string lida para int
     int leitura = strtol(num, NULL, 10);
+    //o valor do contador agora será o valor lido do arquivo.
     *cont = leitura;
+    //fecha o arquivo
     fclose(ident);
   }
 
