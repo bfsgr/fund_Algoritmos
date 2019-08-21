@@ -109,9 +109,8 @@ void load(struct livros *inv, FILE *fp, int *cont){
     //iterador
     i++;
   }
-  i -= 1;
   //itera sobre a contagem de linhas/entradas do arquivo
-  for(j = 0; j < i; j++){
+  for(j = 0; j < i-1; j++){
     //array de strings auxiliar
     char response[7][80];
     //chama a função tokenize para cada uma das linhas, que irá retornar as propriedades individuais da entrada
