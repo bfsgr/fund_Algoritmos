@@ -92,25 +92,24 @@ void tokenize(char* entry, char response[7][80]){
 //loga os dados do arquivo para o struct
 void load(struct livros *inv, FILE *fp, int *cont){
   //iteradores
-  int i = -1, j;
+  int i = 0, j;
   //array de strings auxiliares
   char a[30][200];
   //volta ao inicio do arquivo
   rewind(fp);
-
   //se o final do arquivo NÃO foi atingido
   while(feof(fp) == 0){
     //usa o fscanf para ler do arquivo, com a diletiva %[^\n] ele para a leitura quando achar um \n
     fscanf(fp,"%[^\n]", a[i]);
     //checa novamente se é o fim do arquivo. Isso é feito pois se o stream estiver no final do arquivo, move-lo para frente ira voltar ao inicio do arquivo
     if(feof(fp) == 0){
-      //move o stream 2 bytes da posição atual. (2 bytes é o tamanho de um char único)
-      fseek( fp, 2, SEEK_CUR);
+      //move o stream 1 caractere da posição atual.
+      fseek( fp, sizeof(char), SEEK_CUR);
     }
     //iterador
     i++;
   }
-
+  i -= 1;
   //itera sobre a contagem de linhas/entradas do arquivo
   for(j = 0; j < i; j++){
     //array de strings auxiliar
