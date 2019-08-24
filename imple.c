@@ -134,8 +134,13 @@ void load(struct livros *inv, int *cont){
     ident = fopen("contador.txt", "r");
     //se ele não existir:
     if(ident == NULL){
-      //o contador retornado será o numero de entradas do struct +1
-      *cont = inv[contar(inv)].id+1;
+      //move o stream para o final do arquivo
+      fseek(fp, 0, SEEK_END);
+      //se o db.txt NÃO estiver vazio, altera o contador para o ultimo id do struct +1
+      if(ftell(fp) != 0){
+        //o contador retornado será o numero de entradas do struct +1
+        *cont = inv[contar(inv)].id+1;
+      }
     } else {
       //caso contrário:
       //cria string auxiliar num
